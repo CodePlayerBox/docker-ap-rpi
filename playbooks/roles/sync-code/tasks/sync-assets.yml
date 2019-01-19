@@ -1,0 +1,15 @@
+- name: Upload docker to rpi
+  synchronize:
+    src: ../docker/
+    dest: ~/CodePlayerBox/docker-ap-rpi/docker/
+    rsync_opts:
+      - "--delete"
+      - "--exclude=.DS_Store"
+
+- name: Upload code to rpi
+  synchronize:
+    src: ../code/
+    dest: ~/CodePlayerBox/docker-ap-rpi/code/
+    rsync_opts:
+      - "--delete"
+      - "--exclude=.DS_Store"
