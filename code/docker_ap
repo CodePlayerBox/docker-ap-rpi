@@ -16,7 +16,7 @@
 #usage           :bash docker_ap <start|stop> [interface]
 #bash_version    :4.4.12(1)-release (arm-unknown-linux-gnueabihf)
 #dependencies	   :docker, iw, pgrep, grep, iptables, cat, ip,
-#                 bridge-utils, rfkill
+#                 bridge-utils, rfkill, wpa_cli
 #=============================================================all
 
 #YELLOW='\e[0;33m'
@@ -135,7 +135,13 @@ init () {
     rfkill unblock wifi
     ip link set "$IFACE" up
 
-    # Check if a wlan config file exists
+    # Disconnect from existing AP if necessary
+    if [[ $(wpa_cli -i ${IFACE} status | grep wpa_state | cut -d= -f2) = "COMPLETED" ]]; then
+        echo -e "${RED}[INFO]${NC} Disconnecting ${IFACE} from connected AP"
+        wpa_cli -i ${IFACE} disconnect
+    fi
+
+    # Check if a config file exists
     if [ -e "$PATHSCRIPT"/"$CONF_FILE" ]
     then
         echo -e "${BLUE}[INFO]${NC} Found config file"
@@ -163,7 +169,7 @@ init () {
 service_start () {
     IFACE="$1"
     echo -e "[+] Starting the docker container with name ${GREEN}$DOCKER_NAME${NC}"
-    docker run -dt --name $DOCKER_NAME --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW -v "$PATHSCRIPT"/hostapd.conf:/etc/hostapd/hostapd.conf -v "$PATHSCRIPT"/dnsmasq.conf:/etc/dnsmasq.conf -v "$PATHSCRIPT"/dnsmasq.hosts:/etc/dnsmasq.hosts $DOCKER_IMAGE > /dev/null 2>&1
+    docker run -dt --name $DOCKER_NAME --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW -v /dev/urandom:/dev/random -v "$PATHSCRIPT"/hostapd.conf:/etc/hostapd/hostapd.conf -v "$PATHSCRIPT"/dnsmasq.conf:/etc/dnsmasq.conf -v "$PATHSCRIPT"/dnsmasq.hosts:/etc/dnsmasq.hosts $DOCKER_IMAGE > /dev/null 2>&1
     pid=$(docker inspect -f '{{.State.Pid}}' $DOCKER_NAME)
 
     # Assign phy wireless interface to the container
