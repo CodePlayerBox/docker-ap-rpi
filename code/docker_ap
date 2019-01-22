@@ -17,7 +17,7 @@
 #bash_version    :4.4.12(1)-release (arm-unknown-linux-gnueabihf)
 #dependencies	   :docker, iw, pgrep, grep, iptables, cat, ip,
 #                 bridge-utils, rfkill, wpa_cli
-#=============================================================all
+#=============================================================
 
 #YELLOW='\e[0;33m'
 #BLACK='\e[0;30m'
