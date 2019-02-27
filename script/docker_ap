@@ -30,8 +30,8 @@ BLUE='\e[0;34m'
 NC='\e[0m'
 ROOT_UID="0"
 ARCH=$(arch)
-DOCKER_NAME="ap-rpi"
-DOCKER_IMAGE="ap-rpi"
+DOCKER_NAME="docker-ap-rpi"
+DOCKER_IMAGE="docker-ap-rpi"
 CONF_FILE="ap.conf"
 #PATHSCRIPT=$(pwd)
 pushd "$(dirname "$0")" > /dev/null
