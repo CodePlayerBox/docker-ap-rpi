@@ -3,3 +3,4 @@
   hosts: rpi
   roles:
     - { role: sync-code }
+    - { role: run-docker }
